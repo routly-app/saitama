@@ -1,0 +1,22 @@
+{
+  "name": "@saitamafun/tsconfig",
+  "version": "0.0.0",
+  "license": "AGPL-3.0-only",
+  "publishConfig": {
+    "@saitamafun:registry": "https://npm.pkg.github.com"
+  },
+  "exports": {
+    ".": {
+      "default": "./tsconfig.json"
+    },
+    "./server": {
+      "default": "./tsconfig.server.json"
+    },
+    "./web": {
+      "default": "./tsconfig.web.json"
+    }
+  },
+  "dependencies": {
+    "@tsconfig/bun": "^1.0.7"
+  }
+}

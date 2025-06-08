@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  saitamafun:
+    container_name: api
+    build:
+      context: .
+      dockerfile: servers/api/Dockerfile
+    ports:
+      - "10009:10009"
+    networks:
+      - webnet
+    env_file: .env
+
+networks:
+  webnet:
+
