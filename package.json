@@ -15,7 +15,8 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "publish": "turbo run build && changeset version",
-    "clean": "rimraf -rf node_modules .turbo dist out */*/.turbo */packages/dist */*/.next */*/node_modules"
+    "clean": "rimraf -rf node_modules .turbo dist out */*/.turbo */packages/dist */*/.next */*/node_modules",
+    "postinstall": "node install/index.js"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.4",
