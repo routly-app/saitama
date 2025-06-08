@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: saitama
+    runtime: docker
+    plan: standard
+    autoDeploy: true
+    dockerfilePath: servers/api/Dockerfile
+    buildFilter:
+      paths:
+        - servers/api/**/*.ts
+        - servers/api/Dockerfile
+        - packages/tsconfig/*.json
+    envVars:
+      - fromGroup: servers/api
+      - key: DATABASE_URL
+        fromDatabase:
+          name: saitamaDB
+          property: connectionString
+    domains:
+      - "v1.api.gateway.saitama.fun"
+databases:
+  - name: saitamaDB
+    user: admin
+    plan: starter

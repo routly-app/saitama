@@ -1,0 +1,9 @@
+@unocss;
+
+.first-letter-uppercase::first-letter {
+  text-transform: uppercase;
+}
+
+* {
+  outline: none !important;
+}

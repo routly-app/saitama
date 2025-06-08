@@ -1,0 +1,12 @@
+{
+  "extends": "@saitamafun/tsconfig/web",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "paths": {
+      "@saitamafun/shared": ["../../shared/src"],
+      "@saitamafun/internal": ["../../internal/src"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}

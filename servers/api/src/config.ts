@@ -1,0 +1,1 @@
+export const chains = ["ethereum", "solana", "tron"] as const;
