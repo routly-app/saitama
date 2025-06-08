@@ -1,4 +1,5 @@
 import {
+  boolean,
   integer,
   pgTable,
   text,
@@ -13,10 +14,11 @@ export const coins = pgTable(
   "coins",
   {
     id: uuid().defaultRandom().primaryKey(),
-    mint: text(),
+    mint: text().notNull(),
     name: text().notNull(),
     ticker: text().notNull(),
     logo: text().notNull(),
+    isNative: boolean().default(false).notNull(),
     decimals: integer().notNull(),
     network: uuid()
       .references(() => networks.id)

@@ -10,7 +10,7 @@ export type Coin = {
   name: string;
   ticker: string;
   logo: { default: string };
-  chains: { name: (typeof chains)[number]; mint?: string; decimals: number }[];
+  chains: { name: (typeof chains)[number]; mint: string; decimals: number }[];
 };
 
 export const defaultCoins: Coin[] = [
@@ -18,7 +18,13 @@ export const defaultCoins: Coin[] = [
     name: "Ethereum",
     ticker: "ETH",
     logo: svgs.tokens.branded.ETH,
-    chains: [{ name: "ethereum", decimals: 18 }],
+    chains: [
+      {
+        name: "ethereum",
+        decimals: 18,
+        mint: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      },
+    ],
   },
   {
     name: "USDC",
@@ -72,13 +78,21 @@ export const defaultCoins: Coin[] = [
     name: "Solana",
     ticker: "SOL",
     logo: svgs.tokens.branded.SOL,
-    chains: [{ name: "solana", decimals: 6 }],
+    chains: [
+      {
+        name: "solana",
+        decimals: 6,
+        mint: "So11111111111111111111111111111111111111112",
+      },
+    ],
   },
   {
     name: "Tron",
     ticker: "TRX",
     logo: svgs.tokens.branded.TRX,
-    chains: [{ name: "tron", decimals: 6 }],
+    chains: [
+      { name: "tron", decimals: 6, mint: "TNUC9Qb1rRpS5CbWLmNMxXBjyFoydXjWFR" },
+    ],
   },
 ];
 

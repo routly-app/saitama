@@ -1,5 +1,5 @@
 import { array, boolean, number, object, string, enum as enum_ } from "zod";
-import { selectCustomerSchema, selectWalletSchema1 } from "../../db/zod";
+import { selectWalletSchema1 } from "../../db/zod";
 
 const commitment = enum_([
   "processed",
@@ -14,8 +14,7 @@ const commitment = enum_([
 
 export const transactionSchema = object({
   bytes: array(number()),
-  network: selectWalletSchema1.shape.network,
-  customer: selectCustomerSchema.shape.id,
+  wallet: selectWalletSchema1.shape.id,
   options: object({
     skipPreflight: boolean().optional(),
     commitment,
