@@ -2,10 +2,11 @@ import type { Network } from "./network.model";
 
 export type Coin = {
   id: string;
-  mint?: string;
   name: string;
   ticker: string;
   logo: string;
+  mint: string;
+  isNative: boolean;
   decimals: number;
   creator?: string;
   createdAt: string;

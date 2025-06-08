@@ -5,6 +5,6 @@ export class TransactionApi extends ApiImpl {
   protected path: string = "transactions";
 
   sendTransaction(data: SendTransaction) {
-    return this.xior.post(this.path, data);
+    return this.xior.post<SendTransaction>(this.path, data);
   }
 }

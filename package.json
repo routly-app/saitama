@@ -9,6 +9,11 @@
       "types": "./packages/sdk/src/index.ts",
       "require": "./packages/sdk/dist/index.cjs",
       "default": "./packages/src/index.ts"
+    },
+    "./internal": {
+      "types": "./packages/internal/src/index.ts",
+      "require": "./packages/internal/dist/index.cjs",
+      "default": "./packages/internal/src/index.ts"
     }
   },
   "scripts": {

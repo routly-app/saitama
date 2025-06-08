@@ -9,6 +9,7 @@ import { PaymentApi } from "./payment.api";
 import { CustomerApi } from "./customer.api";
 import { NetworkApi } from "./network.api";
 import { PaymentLinkApi } from "./paymentLink.api";
+import { TransactionApi } from "./transaction.api";
 
 export type * from "./models";
 
@@ -24,6 +25,7 @@ export class Api {
   readonly network: NetworkApi;
   readonly customer: CustomerApi;
   readonly paymentLink: PaymentLinkApi;
+  readonly transaction: TransactionApi;
 
   constructor(
     private readonly endpoint: string,
@@ -50,6 +52,7 @@ export class Api {
     this.network = new NetworkApi(this.xior);
     this.customer = new CustomerApi(this.xior);
     this.paymentLink = new PaymentLinkApi(this.xior);
+    this.transaction = new TransactionApi(this.xior);
   }
 }
 

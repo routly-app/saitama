@@ -99,6 +99,7 @@ const solanaLogs =
                     with: {
                       coin: {
                         columns: {
+                          isNative: true,
                           mint: true,
                         },
                       },
@@ -106,14 +107,7 @@ const solanaLogs =
                   })
                   .execute();
                 if (payment) {
-                  if (payment.coin.mint)
-                    console.error(
-                      format(
-                        "[transaction.invalid] unsupported native mint for payment=%",
-                        payment.id
-                      )
-                    );
-                  else if (parsed) {
+                  if (parsed && payment.coin.isNative) {
                     console.log(
                       "[transaction.validating] payment=",
                       payment.id
@@ -145,7 +139,13 @@ const solanaLogs =
                         format("reason=% signature=%", error, signature)
                       );
                     }
-                  }
+                  } else
+                    console.error(
+                      format(
+                        "[transaction.invalid] unsupported native mint for payment=%",
+                        payment.id
+                      )
+                    );
                 }
               }
             } else if (tokenProgramIds.has(instruction.programId.toBase58())) {
@@ -209,13 +209,15 @@ const solanaLogs =
                       format("reason=% signature=%", error, signature)
                     );
                   }
-                } else
+                } else {
                   console.error(
                     format(
                       "[transaction.invalid] unsupported mint for payment=%",
                       payment.id
                     )
                   );
+                  return;
+                }
               }
             }
 
