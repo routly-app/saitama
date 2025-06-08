@@ -24,11 +24,13 @@ export const refinedPaymentSchema = selectPaymentSchema
       wallet: selectWalletSchema1.pick({
         id: true,
         address: true,
+        metadata: true,
       }),
       coin: selectCoinSchema
         .pick({
           id: true,
           name: true,
+          mint: true,
           ticker: true,
           decimals: true,
         })

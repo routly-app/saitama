@@ -1,3 +1,4 @@
+import { eq } from "drizzle-orm";
 import { array, type z } from "zod";
 import { HDNodeWallet } from "ethers";
 import { web3 } from "@coral-xyz/anchor";
@@ -7,10 +8,12 @@ import zodToJsonSchema from "zod-to-json-schema";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 
 import { getEnv } from "../../env";
-import { encrypt } from "../../core/secret";
+import { wallets } from "../../db/schema";
 import { RequestError } from "../../error";
 import type { chains } from "../../config";
+import { encrypt } from "../../core/secret";
 import { withUserGuard } from "../../guards";
+import { getWallet } from "../../core/wallet";
 import { db, secretKey } from "../../instances";
 import { getNetworkById } from "../networks/networks.controller";
 import {
@@ -21,81 +24,93 @@ import {
 import {
   createWallet,
   deleteWalletByAppAndId,
+  getWalletByAppWhere,
   getWalletsByAppWhere,
   updateWalletByAppAndId,
 } from "./wallet.controller";
-import { getWallet } from "../../core/wallet";
 
 const createWalletRoute = async (
   request: FastifyRequest<{ Body: z.infer<typeof insertWalletSchema> }>
 ) =>
-  insertWalletSchema
-    .omit({ app: true, generated: true })
-    .partial({ address: true })
-    .parseAsync(request.body)
-    .then(async (body) => {
-      let wallet: Awaited<ReturnType<typeof createWallet>>[number] | undefined =
-        undefined;
+  withUserGuard((user) =>
+    insertWalletSchema
+      .omit({ app: true, generated: true })
+      .partial({ address: true })
+      .parseAsync(request.body)
+      .then(async (body) => {
+        let wallet:
+          | Awaited<ReturnType<typeof createWallet>>[number]
+          | undefined = undefined;
 
-      if (body.customer) {
-        let address, publicKey;
+        const network = await getNetworkById(db, body.network);
+        if (network) {
+          if (body.customer) {
+            wallet = await getWalletByAppWhere(
+              db,
+              user.app.id,
+              eq(wallets.network, network.id)
+            );
 
-        if (body.network === "solana") {
-          const keypair = web3.Keypair.generate();
-          publicKey = keypair.publicKey;
-          address = encrypt(secretKey, keypair.secretKey.toBase64());
-        } else if (body.network === "ethereum") {
-          const keypair = HDNodeWallet.createRandom();
-          publicKey = keypair.publicKey;
-          address = encrypt(secretKey, keypair.privateKey);
-        }
+            if (wallet) return wallet;
+            else {
+              let address, publicKey;
 
-        if (address && publicKey)
-          [wallet] = await createWallet(db, {
-            ...body,
-            generated: false,
-            address,
-            app: request.user!.app!.id,
-            metadata: {
-              publicKey: publicKey,
-            },
-          });
-        else
+              if (network.name === "solana") {
+                const keypair = web3.Keypair.generate();
+                publicKey = keypair.publicKey;
+                address = encrypt(secretKey, keypair.secretKey.toBase64());
+              } else if (network.name === "ethereum") {
+                const keypair = HDNodeWallet.createRandom();
+                publicKey = keypair.publicKey;
+                address = encrypt(secretKey, keypair.privateKey);
+              }
+
+              if (address && publicKey)
+                [wallet] = await createWallet(db, {
+                  ...body,
+                  generated: false,
+                  address,
+                  app: request.user!.app!.id,
+                  metadata: {
+                    publicKey: publicKey,
+                  },
+                });
+              else
+                throw new RequestError(
+                  400,
+                  format("network=% not supported", body.network)
+                );
+            }
+          } else {
+            if (body.address)
+              [wallet] = await createWallet(db, {
+                ...body,
+                app: request.user!.app!.id,
+                address: body.address,
+              });
+            else {
+              const [index, address] = await getWallet(
+                getEnv("MNEMONIC")!,
+                network.name as unknown as (typeof chains)[number]
+              );
+              [wallet] = await createWallet(db, {
+                ...body,
+                address,
+                generated: true,
+                app: user.app!.id,
+                metadata: { index },
+              });
+            }
+          }
+
+          return selectWalletSchema.parseAsync(wallet);
+        } else
           throw new RequestError(
-            400,
-            format("network=% not supported", body.network)
+            404,
+            format("network with id=% not found", body.network)
           );
-      } else {
-        if (body.address)
-          [wallet] = await createWallet(db, {
-            ...body,
-            app: request.user!.app!.id,
-            address: body.address,
-          });
-        else {
-          const network = await getNetworkById(db, body.network);
-          if (network) {
-            const [index, address] = await getWallet(
-              getEnv("MNEMONIC")!,
-              network.name as unknown as (typeof chains)[number]
-            );
-            [wallet] = await createWallet(db, {
-              ...body,
-              address,
-              generated: true,
-              app: request.user!.app!.id,
-              metadata: { index },
-            });
-          } else
-            throw new RequestError(
-              404,
-              format("network with id=% not found", body.network)
-            );
-        }
-      }
-
-      return selectWalletSchema.parseAsync(wallet);
-    });
+      })
+  );
 
 export const getWalletsRoute = async (request: FastifyRequest) =>
   array(selectWalletSchema).parseAsync(

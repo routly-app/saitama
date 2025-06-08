@@ -1,10 +1,8 @@
 .turbo
 node_modules
-.env
 dist
 sugar.log 
 dist 
-.env
 .env.prod
 out
 apps/examples
@@ -13,3 +11,4 @@ serviceAccount.json
 .keep
 secret-key
 cache
+config.bat

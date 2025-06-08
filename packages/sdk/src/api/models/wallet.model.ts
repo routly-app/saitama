@@ -1,7 +1,7 @@
 import type { App } from "./app.model";
 import type { Network } from "./network.model";
 
-export type Wallet<T extends object = object> = {
+export type Wallet<T extends object = { publicKey: string }> = {
   id: string;
   metadata?: T;
   address: string;

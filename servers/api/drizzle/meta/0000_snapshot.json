@@ -1,5 +1,5 @@
 {
-  "id": "d23d8cef-a528-402a-8ae6-276c0e703223",
+  "id": "bf6e38d6-57f6-4d06-8410-a0a1b6629df7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -167,7 +167,7 @@
           "name": "mint",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -186,6 +186,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "isNative": {
+          "name": "isNative",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         },
         "decimals": {
           "name": "decimals",
@@ -603,15 +610,13 @@
           "name": "createdAt",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": true
         },
         "updatedAt": {
           "name": "updatedAt",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": true
         }
       },
       "indexes": {},

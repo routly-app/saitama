@@ -184,6 +184,7 @@ export const onEthereumLogs = (
                     coin: {
                       columns: {
                         mint: true,
+                        isNative: true,
                       },
                     },
                   },
@@ -191,16 +192,7 @@ export const onEthereumLogs = (
                 .execute();
 
               if (payment) {
-                if (payment.coin.mint) {
-                  console.error(
-                    format(
-                      "[transaction.invalid] unsupported native mint for payment=%",
-                      payment.id
-                    )
-                  );
-
-                  return;
-                } else {
+                if (payment.coin.isNative) {
                   console.log("[transaction.validating] payment=", payment.id);
                   const data: Partial<z.infer<typeof insertPaymentSchema>> = {};
 
@@ -245,6 +237,15 @@ export const onEthereumLogs = (
                         await getPaymentById(db, updatedPayment.id)
                       )
                     );
+                } else {
+                  console.error(
+                    format(
+                      "[transaction.invalid] unsupported native mint for payment=%",
+                      payment.id
+                    )
+                  );
+
+                  return;
                 }
               }
               console.error(

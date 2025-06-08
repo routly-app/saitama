@@ -48,14 +48,11 @@ const SelectCoinTab = withSuspense(function SelectCoinTab({
             coin: coin.id,
           });
 
-        console.log(paymentLink);
-
         const priceInUSD = await getMintPriceUSD(
           network.name,
           coin.mint ? coin.mint : wrappedCoins[network.name]
         );
 
-        console.log(priceInUSD)
         const amount = new Decimal(
           parseFloat(paymentLink.price.amount) / priceInUSD
         )
