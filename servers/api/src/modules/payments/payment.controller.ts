@@ -33,6 +33,7 @@ export const getPaymentsByAppWhere = (
         columns: {
           id: true,
           address: true,
+          metadata: true,
         },
       },
       coin: {
@@ -47,6 +48,7 @@ export const getPaymentsByAppWhere = (
         columns: {
           id: true,
           name: true,
+          mint: true,
           ticker: true,
           decimals: true,
         },
@@ -92,6 +94,7 @@ export const getPaymentByAppAndId = (
           columns: {
             id: true,
             address: true,
+            metadata: true,
           },
         },
         coin: {
@@ -106,6 +109,7 @@ export const getPaymentByAppAndId = (
           columns: {
             id: true,
             name: true,
+            mint: true,
             ticker: true,
             decimals: true,
           },
@@ -151,6 +155,7 @@ export const getPaymentById = (
           columns: {
             id: true,
             address: true,
+            metadata: true,
           },
         },
         coin: {
@@ -165,6 +170,7 @@ export const getPaymentById = (
           columns: {
             id: true,
             name: true,
+            mint: true,
             ticker: true,
             decimals: true,
           },

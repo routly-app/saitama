@@ -13,6 +13,7 @@ import { insertCoinSchema, selectCoinSchema } from "../../db/zod";
 import {
   createCoin,
   deleteCoinByUserAndId,
+  getCoinById,
   getCoins,
   updateCoinByUserAndId,
 } from "./coins.controller";
@@ -38,6 +39,21 @@ const getCoinsRoute = withUserGuard(async (user) => {
     ])
   ).flat();
 }, true);
+
+const getCoinRoute = (
+  request: FastifyRequest<{
+    Params: Pick<z.infer<typeof selectCoinSchema>, "id">;
+  }>
+) =>
+  selectCoinSchema
+    .pick({ id: true })
+    .parseAsync(request.params)
+    .then((body) => {
+      const coin = getCoinById(db, body.id);
+      if (coin) return coin;
+
+      throw new Error(format("coin with id=% not found", body.id));
+    });
 
 const updateCoinRoute = (
   request: FastifyRequest<{
@@ -111,10 +127,26 @@ export default function registerCoinRoutes(fastify: FastifyInstance) {
       preHandler: passport.authenticate(["jwt", "apiKey"]),
       schema: {
         tags: ["coins"],
+        description: "This resource is to multiple coins.",
         response: {
           200: zodToJsonSchema(array(selectCoinSchema), {
             definitions: { selectCoinSchema },
           }),
+        },
+      },
+    })
+    .route({
+      url: "/:id/",
+      method: "GET",
+      handler: RequestError.handler(getCoinRoute),
+      preHandler: passport.authenticate(["jwt", "apiKey"]),
+      schema: {
+        tags: ["coins"],
+        description:
+          "This resource is to retrieve some information about a single coin.",
+        params: zodToJsonSchema(selectCoinSchema.pick({ id: true })),
+        response: {
+          200: zodToJsonSchema(selectCoinSchema),
         },
       },
     })

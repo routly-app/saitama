@@ -13,6 +13,8 @@ export class FirebaseStrategy extends Strategy {
     if (authorization) {
       const [, value] = authorization.split(/\s+/g);
 
+      console.log(value);
+
       if (value) {
         const auth = getAuth();
 
@@ -26,6 +28,8 @@ export class FirebaseStrategy extends Strategy {
               lastLogin: new Date(firebaseUser.auth_time),
             };
 
+            console.log(value);
+
             const [user] = await db
               .insert(users)
               .values(value)
@@ -33,9 +37,14 @@ export class FirebaseStrategy extends Strategy {
               .returning()
               .execute();
 
+            console.log(user);
+
             this.success(user);
           })
-          .catch((error) => this.fail(error, 401));
+          .catch((error) => {
+            console.error(error);
+            this.fail(error, 401);
+          });
       }
     }
 

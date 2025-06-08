@@ -11,6 +11,7 @@ import registerPaymentRoutes from "./payments/payment.route";
 import registerWebhookRoutes from "./webhooks/webhook.route";
 import registerNetworkRoutes from "./networks/networks.route";
 import registerCustomerRoutes from "./customers/customers.route";
+import registerTransactionRoutes from "./transactions/transactions.route";
 import registerPaymentLinkRoutes from "./payment-links/payment-links.route";
 
 export default async function registerRoutes(fastify: FastifyInstance) {
@@ -27,5 +28,8 @@ export default async function registerRoutes(fastify: FastifyInstance) {
   await fastify.register(registerCustomerRoutes, { prefix: "/customers/" });
   await fastify.register(registerPaymentLinkRoutes, {
     prefix: "/payment-links/",
+  });
+  await fastify.register(registerTransactionRoutes, {
+    prefix: "/transactions/",
   });
 }
